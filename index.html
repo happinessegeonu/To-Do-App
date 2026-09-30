@@ -40,6 +40,27 @@
           placeholder="What needs to be done?"
           autocomplete="off"
         >
+        <div class="task-options">
+          <label class="option-field">
+            <span>Priority</span>
+            <select id="priorityInput" aria-label="Task priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </label>
+          <label class="option-field">
+            <span>Due date</span>
+            <input id="dueDateInput" type="date" aria-label="Task due date">
+          </label>
+          <label class="option-field">
+            <span>Status</span>
+            <select id="progressInput" aria-label="Task progress">
+              <option value="todo" selected>Not started</option>
+              <option value="in-progress">In progress</option>
+            </select>
+          </label>
+        </div>
         <button type="submit" class="add-btn">Add task</button>
       </form>
 

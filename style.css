@@ -169,12 +169,13 @@ h1 {
 }
 
 .task-form {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
   margin-bottom: 22px;
 }
 
-.task-form input {
+.task-form > input {
   min-width: 0;
   flex: 1;
   padding: 15px 17px;
@@ -186,14 +187,48 @@ h1 {
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
-.task-form input::placeholder {
+.task-form > input::placeholder {
   color: #718096;
 }
 
-.task-form input:focus {
+.task-form > input:focus {
   border-color: rgba(124, 92, 255, 0.8);
   background: rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.12);
+}
+
+.task-options {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.option-field {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.option-field select,
+.option-field input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 11px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  outline: none;
+  color-scheme: dark;
+}
+
+.option-field select:focus,
+.option-field input:focus {
+  border-color: rgba(124, 92, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.12);
 }
 
 .add-btn {
@@ -318,13 +353,44 @@ h1 {
 }
 
 .task-text {
-  flex: 1;
   min-width: 0;
   overflow-wrap: anywhere;
   color: #e8edf7;
   font-size: 14px;
   line-height: 1.5;
 }
+
+.task-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+}
+
+.priority-badge,
+.progress-badge,
+.task-due-date {
+  font-size: 10px;
+}
+
+.priority-badge,
+.progress-badge {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.priority-low { color: #86efac; }
+.priority-medium { color: #fde68a; }
+.priority-high { color: #fda4af; }
+.progress-badge { color: #67e8f9; background: rgba(34, 211, 238, 0.1); }
+.task-due-date { color: var(--muted); }
 
 .task-item.completed .task-text {
   color: #718096;
@@ -462,7 +528,11 @@ h1 {
   }
 
   .task-form {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+  }
+
+  .task-options {
+    grid-template-columns: 1fr;
   }
 
   .add-btn {

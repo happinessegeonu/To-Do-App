@@ -5,6 +5,9 @@ let currentFilter = "all";
 
 const taskForm = document.getElementById("taskForm");
 const taskInput = document.getElementById("taskInput");
+const priorityInput = document.getElementById("priorityInput");
+const dueDateInput = document.getElementById("dueDateInput");
+const progressInput = document.getElementById("progressInput");
 const taskList = document.getElementById("taskList");
 const emptyState = document.getElementById("emptyState");
 const emptyTitle = document.getElementById("emptyTitle");
@@ -30,11 +33,14 @@ function saveTasks() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 }
 
-function createTask(text) {
+function createTask(text, details) {
   return {
     id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
     text: text.trim(),
     completed: false,
+    priority: details.priority,
+    dueDate: details.dueDate,
+    progress: details.progress,
     createdAt: new Date().toISOString()
   };
 }
@@ -82,6 +88,28 @@ function createTaskElement(task) {
   text.className = "task-text";
   text.textContent = task.text;
 
+  const details = document.createElement("div");
+  details.className = "task-details";
+  const priority = task.priority || "medium";
+  const priorityLabel = document.createElement("span");
+  priorityLabel.className = `priority-badge priority-${priority}`;
+  priorityLabel.textContent = `${priority[0].toUpperCase()}${priority.slice(1)} priority`;
+  details.appendChild(priorityLabel);
+
+  if (task.dueDate) {
+    const dueDate = document.createElement("span");
+    dueDate.className = "task-due-date";
+    dueDate.textContent = `Due ${new Date(`${task.dueDate}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
+    details.appendChild(dueDate);
+  }
+
+  if (!task.completed && task.progress === "in-progress") {
+    const progress = document.createElement("span");
+    progress.className = "progress-badge";
+    progress.textContent = "In progress";
+    details.appendChild(progress);
+  }
+
   const actions = document.createElement("div");
   actions.className = "task-actions";
 
@@ -100,7 +128,10 @@ function createTaskElement(task) {
   deleteButton.addEventListener("click", () => deleteTask(task.id));
 
   actions.append(editButton, deleteButton);
-  item.append(checkButton, text, actions);
+  const content = document.createElement("div");
+  content.className = "task-content";
+  content.append(text, details);
+  item.append(checkButton, content, actions);
 
   return item;
 }
@@ -114,13 +145,20 @@ function addTask(text) {
     return;
   }
 
-  tasks.unshift(createTask(cleanText));
+  tasks.unshift(createTask(cleanText, {
+    priority: priorityInput.value,
+    dueDate: dueDateInput.value,
+    progress: progressInput.value
+  }));
   saveTasks();
   currentFilter = "all";
   updateFilterButtons();
   render();
 
   taskInput.value = "";
+  priorityInput.value = "medium";
+  dueDateInput.value = "";
+  progressInput.value = "todo";
   taskInput.focus();
   showToast("Task added.");
 }
